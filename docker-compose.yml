@@ -1,0 +1,70 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile
+      args:
+        USER_ID: ${USER_ID}
+    container_name: ${APP_NAME}-app
+    restart: unless-stopped
+    image : qpetitdev/karlach
+    depends_on:
+      - db
+    volumes :
+      - ./src:/var/www
+      - ./docker/php/custom.ini:/usr/local/etc/php/conf.d/custom.ini
+    networks:
+      - karlach-network
+      - planner
+
+  db:
+    image: mariadb
+    container_name: ${APP_NAME}-db
+    restart: always
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USER}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ${APP_NAME}-db:/var/lib/mysql
+    networks:
+      - karlach-network
+
+  nginx:
+    image: nginx:alpine
+    container_name: ${APP_NAME}-nginx
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "9000:8000"
+      - "543:443"
+    volumes:
+      - ./src:/var/www
+      - ./docker/nginx/conf.d/:/etc/nginx/conf.d/
+    networks:
+      - karlach-network
+      - planner
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: ${APP_NAME}-pma
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    depends_on:
+      - db
+    ports:
+      - "9100:80"
+    networks:
+      - karlach-network
+
+volumes:
+  karlach-db:
+
+networks:
+  karlach-network:
+  planner:
+    name: planner-network
+    external: true
