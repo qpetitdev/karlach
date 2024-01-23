@@ -24,6 +24,10 @@ Depuis la racine du projet:
 - Jouer les migrations dans le container de l'appli:
 
         docker exec -it karlach-app php artisan migrate
+- Créer les clés de sécurité pour l'authentification
+
+        docker exec -it karlach-app php artisan passport:keys
+
 
 ### Infos utiles ###
 
