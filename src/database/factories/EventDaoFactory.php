@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Event;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +10,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class EventDaoFactory extends Factory
 {
+    protected $model = Event::class;
+
     /**
      * Define the model's default state.
      *
@@ -17,7 +20,11 @@ class EventDaoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->word(),
+            'description' => $this->faker->sentence(),
+            'start' => $this->faker->dateTimeBetween(),
+            'end' => $this->faker->dateTimeBetween(),
+            'author_id' => $this->faker->numberBetween(),
         ];
     }
 }
