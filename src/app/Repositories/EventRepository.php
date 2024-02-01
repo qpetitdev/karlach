@@ -18,6 +18,17 @@ class EventRepository
         return Event::all()->map(fn($dao) => $this->mapDaoToDto($dao));
     }
 
+    public function getById(int $id): ?EventDto
+    {
+        $storedEvent = Event::find($id);
+
+        if(is_null($storedEvent)){
+            return null;
+        }
+
+        return $this->mapDaoToDto($storedEvent);
+    }
+
     /**
      * @param Event $event
      * @return EventDto

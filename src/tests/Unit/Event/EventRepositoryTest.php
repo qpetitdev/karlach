@@ -32,4 +32,24 @@ class EventRepositoryTest extends TestCase
         $this->assertCount($count,$result);
         $this->assertInstanceOf(EventDto::class,$result->first());
     }
+
+    public function test_it_should_get_a_specific_event(){
+        $event = Event::factory()->create();
+
+        $result = $this->repository->getById($event->id);
+
+        $this->assertInstanceOf(EventDto::class,$result);
+        $this->assertEquals($event->name,$result->name);
+        $this->assertEquals($event->description,$result->description);
+        $this->assertEquals($event->start,$result->start);
+        $this->assertEquals($event->end,$result->end);
+        $this->assertEquals($event->author_id,$result->authorId);
+    }
+
+    public function test_it_should_return_null_on_get_unknown_event()
+    {
+        $result = $this->repository->getById(3948);
+
+        $this->assertNull($result);
+    }
 }
